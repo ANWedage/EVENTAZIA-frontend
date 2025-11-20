@@ -499,6 +499,8 @@
         const cacheBuster = new Date().getTime();
         const bannerUrl = `${apiUrl}/api/event-details/banner?t=${cacheBuster}`;
         
+        console.log('🔄 Fetching banner from:', bannerUrl);
+        
         const response = await fetch(bannerUrl, {
           cache: 'no-store',  // Prevent browser caching
           headers: {
@@ -508,14 +510,18 @@
           }
         });
         
+        console.log('📡 Banner response status:', response.status, 'Headers:', Object.fromEntries(response.headers));
+        
         const bannerImage = document.getElementById('bannerImage');
         const placeholder = document.getElementById('ticketPlaceholder');
         
         if (response.ok) {
           const blob = await response.blob();
+          console.log('📦 Blob received - Size:', (blob.size / 1024).toFixed(2), 'KB, Type:', blob.type);
           
           // Check if banner actually changed by comparing size
           if (lastBannerSize !== blob.size) {
+            console.log('🆕 Banner changed! Old size:', lastBannerSize, 'New size:', blob.size);
             const imageUrl = URL.createObjectURL(blob);
             
             if (bannerImage && placeholder) {
@@ -531,9 +537,12 @@
               placeholder.style.display = 'none';
               console.log('✅ Banner loaded/updated successfully (Size:', (blob.size / 1024).toFixed(2), 'KB)');
             }
+          } else {
+            console.log('ℹ️ Banner unchanged (same size)');
           }
         } else if (response.status === 404) {
           // No banner uploaded, show placeholder
+          console.log('⚠️ Banner not found (404)');
           if (bannerImage && placeholder) {
             if (currentBannerUrl) {
               URL.revokeObjectURL(currentBannerUrl);
@@ -544,6 +553,8 @@
             placeholder.style.display = 'flex';
             console.log('ℹ️ No banner available - showing placeholder');
           }
+        } else {
+          console.warn('⚠️ Unexpected response status:', response.status);
         }
       } catch (error) {
         console.error('❌ Error loading banner image:', error);
