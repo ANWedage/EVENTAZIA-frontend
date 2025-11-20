@@ -12,8 +12,7 @@
     if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
       window.__API_URL__ = 'http://localhost:3001';
     } else {
-      // Production: This should be set via environment variable during deployment
-      // You can manually set it here for testing
+      // Production: Backend API URL
       window.__API_URL__ = 'https://eventazia-backend.onrender.com';
     }
   }
