@@ -14,7 +14,7 @@
     } else {
       // Production: This should be set via environment variable during deployment
       // You can manually set it here for testing
-      window.__API_URL__ = 'https://your-backend.onrender.com';
+      window.__API_URL__ = 'https://eventazia-backend.onrender.com';
     }
   }
   
