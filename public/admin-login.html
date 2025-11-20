@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Login - Eventazia 2025</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+      background: linear-gradient(135deg, #064e3b 0%, #065f46 25%, #047857 50%, #059669 75%, #10b981 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .login-container {
+      background: white;
+      border-radius: 24px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+      max-width: 450px;
+      width: 100%;
+      padding: 48px 40px;
+    }
+
+    .login-header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .admin-icon {
+      width: 80px;
+      height: 80px;
+      margin: 0 auto 20px;
+      background: linear-gradient(135deg, #16a34a, #059669);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .admin-icon svg {
+      width: 40px;
+      height: 40px;
+      color: white;
+    }
+
+    .login-title {
+      font-size: 32px;
+      font-weight: bold;
+      background: linear-gradient(135deg, #16a34a, #059669);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 8px;
+    }
+
+    .login-subtitle {
+      color: #065f46;
+      font-size: 16px;
+      font-weight: 600;
+    }
+
+    .form-group {
+      margin-bottom: 24px;
+    }
+
+    label {
+      display: block;
+      font-size: 14px;
+      font-weight: 600;
+      color: #065f46;
+      margin-bottom: 8px;
+    }
+
+    .input-wrapper {
+      position: relative;
+    }
+
+    .input-icon {
+      position: absolute;
+      left: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #6b7280;
+      width: 20px;
+      height: 20px;
+    }
+
+    input[type="text"],
+    input[type="password"] {
+      width: 100%;
+      padding: 14px 16px 14px 48px;
+      border: 2px solid #d1d5db;
+      border-radius: 12px;
+      font-size: 16px;
+      transition: border-color 0.3s;
+    }
+
+    input:focus {
+      outline: none;
+      border-color: #16a34a;
+    }
+
+    input.error {
+      border-color: #ef4444;
+    }
+
+    .error-message {
+      color: #ef4444;
+      font-size: 13px;
+      font-weight: 600;
+      margin-top: 8px;
+      padding: 8px 12px;
+      background: #fef2f2;
+      border-left: 3px solid #ef4444;
+      border-radius: 4px;
+      display: none;
+    }
+
+    .error-message.show {
+      display: block;
+    }
+
+    .login-btn {
+      width: 100%;
+      padding: 16px 32px;
+      background: linear-gradient(135deg, #16a34a, #059669);
+      color: white;
+      font-size: 18px;
+      font-weight: bold;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      box-shadow: 0 10px 30px rgba(22, 163, 74, 0.3);
+      transition: all 0.3s;
+      margin-top: 8px;
+    }
+
+    .login-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 15px 40px rgba(22, 163, 74, 0.4);
+    }
+
+    .login-btn:active {
+      transform: translateY(0);
+    }
+
+    .login-btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .back-link {
+      text-align: center;
+      margin-top: 24px;
+    }
+
+    .back-link a {
+      color: #16a34a;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 14px;
+      transition: color 0.3s;
+    }
+
+    .back-link a:hover {
+      color: #059669;
+      text-decoration: underline;
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-10px); }
+      75% { transform: translateX(10px); }
+    }
+  </style>
+</head>
+<body>
+  <div class="login-container">
+    <div class="login-header">
+      <div class="admin-icon">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+        </svg>
+      </div>
+      <h1 class="login-title">Admin Portal</h1>
+      <p class="login-subtitle">Eventazia 2025</p>
+    </div>
+
+    <form id="loginForm">
+      <!-- Username Field -->
+      <div class="form-group">
+        <label for="username">Username</label>
+        <div class="input-wrapper">
+          <svg class="input-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+          </svg>
+          <input type="text" id="username" name="username" placeholder="Enter username" autocomplete="username">
+        </div>
+      </div>
+
+      <!-- Password Field -->
+      <div class="form-group">
+        <label for="password">Password</label>
+        <div class="input-wrapper">
+          <svg class="input-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+          </svg>
+          <input type="password" id="password" name="password" placeholder="Enter password" autocomplete="current-password">
+        </div>
+      </div>
+
+      <!-- Error Message -->
+      <div class="error-message" id="errorMessage">
+        ❌ Invalid username or password
+      </div>
+
+      <!-- Login Button -->
+      <button type="submit" class="login-btn" id="loginBtn">Admin Login</button>
+    </form>
+
+    <div class="back-link">
+      <a href="javascript:window.close()">← Back to Main Site</a>
+    </div>
+  </div>
+
+  <script>
+    const form = document.getElementById('loginForm');
+    const usernameInput = document.getElementById('username');
+    const passwordInput = document.getElementById('password');
+    const errorMessage = document.getElementById('errorMessage');
+    const loginBtn = document.getElementById('loginBtn');
+
+    // Admin credentials
+    const ADMIN_USERNAME = 'Adeepa';
+    const ADMIN_PASSWORD = 'Admin@10171';
+
+    // Form submission
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      const username = usernameInput.value.trim();
+      const password = passwordInput.value;
+
+      // Hide previous error
+      errorMessage.classList.remove('show');
+      usernameInput.classList.remove('error');
+      passwordInput.classList.remove('error');
+
+      // Validate credentials
+      if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
+        // Successful login
+        loginBtn.textContent = 'Logging in...';
+        loginBtn.disabled = true;
+
+        // Store admin session in localStorage (persists across tabs)
+        localStorage.setItem('adminLoggedIn', 'true');
+        localStorage.setItem('adminUsername', username);
+        localStorage.setItem('lastActivity', Date.now().toString()); // Set initial activity timestamp
+
+        // Redirect to admin dashboard in the same window
+        setTimeout(() => {
+          window.location.replace('/admin-dashboard.html');
+        }, 500);
+      } else {
+        // Failed login
+        errorMessage.classList.add('show');
+        usernameInput.classList.add('error');
+        passwordInput.classList.add('error');
+        
+        // Shake animation
+        errorMessage.style.animation = 'shake 0.5s';
+        setTimeout(() => {
+          errorMessage.style.animation = '';
+        }, 500);
+      }
+    });
+
+    // Clear errors on input
+    usernameInput.addEventListener('input', function() {
+      errorMessage.classList.remove('show');
+      usernameInput.classList.remove('error');
+    });
+
+    passwordInput.addEventListener('input', function() {
+      errorMessage.classList.remove('show');
+      passwordInput.classList.remove('error');
+    });
+
+    // Check if already logged in
+    if (localStorage.getItem('adminLoggedIn') === 'true') {
+      window.location.replace('/admin-dashboard.html');
+    }
+  </script>
+</body>
+</html>

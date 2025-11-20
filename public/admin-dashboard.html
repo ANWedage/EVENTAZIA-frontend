@@ -1,0 +1,2113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard - Eventazia 2025</title>
+  <script src="/config.js"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+      background: #f0fdf4;
+      min-height: 100vh;
+    }
+
+    /* Header */
+    .header {
+      background: linear-gradient(135deg, #16a34a, #059669);
+      color: white;
+      padding: 16px 24px;
+      box-shadow: 0 4px 12px rgba(22, 163, 74, 0.2);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 24px;
+      font-weight: bold;
+    }
+
+    .logo svg {
+      width: 32px;
+      height: 32px;
+    }
+
+    .header-title {
+      font-size: 20px;
+      font-weight: 600;
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 8px 16px;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 12px;
+    }
+
+    .user-avatar {
+      width: 36px;
+      height: 36px;
+      background: white;
+      color: #16a34a;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+    }
+
+    .logout-btn {
+      padding: 10px 20px;
+      background: white;
+      color: #16a34a;
+      border: none;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .logout-btn:hover {
+      background: #f0fdf4;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Sidebar */
+    .container {
+      display: flex;
+      min-height: calc(100vh - 72px);
+    }
+
+    .sidebar {
+      width: 260px;
+      background: white;
+      border-right: 2px solid #e5e7eb;
+      padding: 24px 0;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 24px;
+      color: #065f46;
+      text-decoration: none;
+      font-weight: 500;
+      transition: all 0.3s;
+      cursor: pointer;
+      border-left: 4px solid transparent;
+    }
+
+    .nav-item:hover {
+      background: #f0fdf4;
+      border-left-color: #16a34a;
+      color: #16a34a;
+    }
+
+    .nav-item.active {
+      background: #dcfce7;
+      border-left-color: #16a34a;
+      color: #16a34a;
+      font-weight: 600;
+    }
+
+    .nav-item svg {
+      width: 20px;
+      height: 20px;
+      flex-shrink: 0;
+    }
+
+    /* Main Content */
+    .main-content {
+      flex: 1;
+      padding: 32px;
+    }
+
+    .page-header {
+      margin-bottom: 32px;
+    }
+
+    .page-title {
+      font-size: 32px;
+      font-weight: bold;
+      color: #065f46;
+      margin-bottom: 8px;
+    }
+
+    .page-subtitle {
+      color: #6b7280;
+      font-size: 16px;
+    }
+
+    /* Stats Cards */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 24px;
+      margin-bottom: 32px;
+    }
+
+    .stat-card {
+      background: white;
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+      transition: all 0.3s;
+    }
+
+    .stat-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 24px rgba(22, 163, 74, 0.15);
+    }
+
+    .stat-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 16px;
+    }
+
+    .stat-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .stat-icon.green {
+      background: linear-gradient(135deg, #dcfce7, #bbf7d0);
+      color: #16a34a;
+    }
+
+    .stat-icon.blue {
+      background: linear-gradient(135deg, #dbeafe, #bfdbfe);
+      color: #2563eb;
+    }
+
+    .stat-icon.purple {
+      background: linear-gradient(135deg, #f3e8ff, #e9d5ff);
+      color: #9333ea;
+    }
+
+    .stat-icon.orange {
+      background: linear-gradient(135deg, #fed7aa, #fdba74);
+      color: #ea580c;
+    }
+
+    .stat-icon svg {
+      width: 24px;
+      height: 24px;
+    }
+
+    .stat-value {
+      font-size: 32px;
+      font-weight: bold;
+      color: #065f46;
+      margin-bottom: 4px;
+    }
+
+    .stat-label {
+      color: #6b7280;
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    .stat-change {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      margin-top: 8px;
+    }
+
+    .stat-change.positive {
+      background: #dcfce7;
+      color: #16a34a;
+    }
+
+    .stat-change.negative {
+      background: #fee2e2;
+      color: #dc2626;
+    }
+
+    /* Content Placeholder */
+    .content-section {
+      background: white;
+      border-radius: 16px;
+      padding: 32px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+      min-height: 400px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .placeholder-icon {
+      width: 120px;
+      height: 120px;
+      background: linear-gradient(135deg, #dcfce7, #bbf7d0);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 24px;
+    }
+
+    .placeholder-icon svg {
+      width: 60px;
+      height: 60px;
+      color: #16a34a;
+    }
+
+    .placeholder-title {
+      font-size: 24px;
+      font-weight: bold;
+      color: #065f46;
+      margin-bottom: 8px;
+    }
+
+    .placeholder-text {
+      color: #6b7280;
+      font-size: 16px;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <div class="header">
+    <div class="header-left">
+      <div class="logo">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+        </svg>
+        <span>Eventazia</span>
+      </div>
+      <span class="header-title">Admin Dashboard</span>
+    </div>
+    <div class="header-right">
+      <div class="user-info">
+        <div class="user-avatar" id="userAvatar">A</div>
+        <div>
+          <div style="font-weight: 600; font-size: 14px;" id="userName">Adeepa</div>
+          <div style="font-size: 12px; opacity: 0.9;">Administrator</div>
+          <div id="sessionTimer" style="font-size: 11px; color: #ffffff; margin-top: 4px; font-weight: 500;">
+            <svg style="width: 10px; height: 10px; display: inline; vertical-align: middle;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            Active
+          </div>
+        </div>
+      </div>
+      <button class="logout-btn" onclick="logout()">
+        <svg style="width: 18px; height: 18px; display: inline; vertical-align: middle; margin-right: 6px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+        </svg>
+        Logout
+      </button>
+    </div>
+  </div>
+
+  <div class="container">
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <div class="nav-item active">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+        </svg>
+        <span>Dashboard</span>
+      </div>
+      <div class="nav-item">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        <span>Pending Reviews</span>
+      </div>
+      <div class="nav-item">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        <span>Verified Payments</span>
+      </div>
+      <div class="nav-item">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z" />
+        </svg>
+        <span>Total Registrations</span>
+      </div>
+      <div class="nav-item" id="updateDetailsNav">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+        </svg>
+        <span>Update Site Details</span>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+      <div class="page-header">
+        <h1 class="page-title">Dashboard Overview</h1>
+        <p class="page-subtitle">Welcome back! Here's what's happening with Eventazia 2025.</p>
+      </div>
+
+      <!-- Stats Grid -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-header">
+            <div>
+              <div class="stat-value">0</div>
+              <div class="stat-label">Total Registrations</div>
+              <div class="stat-change positive">
+                <svg style="width: 12px; height: 12px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18" />
+                </svg>
+                +0%
+              </div>
+            </div>
+            <div class="stat-icon green">
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z" />
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-header">
+            <div>
+              <div class="stat-value">0</div>
+              <div class="stat-label">Verified Payments</div>
+              <div class="stat-change positive">
+                <svg style="width: 12px; height: 12px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18" />
+                </svg>
+                +0%
+              </div>
+            </div>
+            <div class="stat-icon blue">
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-header">
+            <div>
+              <div class="stat-value">0</div>
+              <div class="stat-label">Pending Reviews</div>
+              <div class="stat-change positive">
+                <svg style="width: 12px; height: 12px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                0 new
+              </div>
+            </div>
+            <div class="stat-icon purple">
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-header">
+            <div>
+              <div class="stat-value">Rs 0</div>
+              <div class="stat-label">Total Revenue</div>
+              <div class="stat-change positive">
+                <svg style="width: 12px; height: 12px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18" />
+                </svg>
+                +0%
+              </div>
+            </div>
+            <div class="stat-icon orange">
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Dashboard Content -->
+      <div id="dashboardContent" class="content-section">
+        <div class="placeholder-icon">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+          </svg>
+        </div>
+        <h2 class="placeholder-title">Dashboard Content Coming Soon</h2>
+        <p class="placeholder-text">
+          Registration data, analytics, and management tools will be displayed here.
+        </p>
+      </div>
+
+      <!-- Update Details Content -->
+      <div id="updateDetailsContent" class="content-section" style="display: none;">
+        <h2 style="font-size: 28px; font-weight: bold; color: #065f46; margin-bottom: 32px;">Update Site Details</h2>
+        
+        <!-- Event Details Section -->
+        <div style="margin-bottom: 48px;">
+          <h3 style="font-size: 22px; font-weight: bold; color: #065f46; margin-bottom: 24px; display: flex; align-items: center; gap: 12px;">
+            <svg style="width: 24px; height: 24px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+            </svg>
+            Event Details
+          </h3>
+          
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 32px; align-items: start;">
+            <!-- Form Column -->
+            <form id="updateDetailsForm" style="background: #f0fdf4; padding: 32px; border-radius: 16px; border: 2px solid #bbf7d0;">
+              <!-- Date Field -->
+              <div style="margin-bottom: 24px;">
+                <label style="display: block; font-size: 14px; font-weight: 600; color: #065f46; margin-bottom: 8px;">
+                  Event Date <span style="color: #ef4444;">*</span>
+                </label>
+                <input 
+                  type="date" 
+                  id="eventDate" 
+                  name="eventDate" 
+                  required
+                  style="width: 100%; padding: 12px 16px; border: 2px solid #d1d5db; border-radius: 8px; font-size: 16px; transition: border-color 0.3s;"
+                  onfocus="this.style.borderColor='#16a34a'" 
+                  onblur="this.style.borderColor='#d1d5db'"
+                />
+              </div>
+
+              <!-- Time Field -->
+              <div style="margin-bottom: 24px;">
+                <label style="display: block; font-size: 14px; font-weight: 600; color: #065f46; margin-bottom: 8px;">
+                  Event Time <span style="color: #ef4444;">*</span>
+                </label>
+                <input 
+                  type="text" 
+                  id="eventTime" 
+                  name="eventTime" 
+                  placeholder="e.g., 6:00 PM - 11:00 PM"
+                  required
+                  style="width: 100%; padding: 12px 16px; border: 2px solid #d1d5db; border-radius: 8px; font-size: 16px; transition: border-color 0.3s;"
+                  onfocus="this.style.borderColor='#16a34a'" 
+                  onblur="this.style.borderColor='#d1d5db'"
+                />
+              </div>
+
+              <!-- Venue Field -->
+              <div style="margin-bottom: 32px;">
+                <label style="display: block; font-size: 14px; font-weight: 600; color: #065f46; margin-bottom: 8px;">
+                  Event Venue <span style="color: #ef4444;">*</span>
+                </label>
+                <input 
+                  type="text" 
+                  id="eventVenue" 
+                  name="eventVenue" 
+                  placeholder="e.g., Grand Ballroom"
+                  required
+                  style="width: 100%; padding: 12px 16px; border: 2px solid #d1d5db; border-radius: 8px; font-size: 16px; transition: border-color 0.3s;"
+                  onfocus="this.style.borderColor='#16a34a'" 
+                  onblur="this.style.borderColor='#d1d5db'"
+                />
+              </div>
+
+              <!-- Success/Error Messages -->
+              <div id="updateMessage" style="display: none; padding: 12px 16px; border-radius: 8px; margin-bottom: 16px; font-weight: 600;"></div>
+
+              <!-- Save Button -->
+              <button 
+                type="submit" 
+                id="saveBtn"
+                style="width: 100%; padding: 16px 32px; background: linear-gradient(135deg, #16a34a, #059669); color: white; font-size: 18px; font-weight: bold; border: none; border-radius: 12px; cursor: pointer; box-shadow: 0 10px 30px rgba(22, 163, 74, 0.3); transition: all 0.3s;"
+                onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 15px 40px rgba(22, 163, 74, 0.4)'"
+                onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 10px 30px rgba(22, 163, 74, 0.3)'"
+              >
+                Save Changes
+              </button>
+            </form>
+
+            <!-- Preview Column -->
+            <div style="padding: 32px; background: white; border-radius: 16px; border: 2px solid #e5e7eb; position: sticky; top: 20px;">
+              <h3 style="font-size: 18px; font-weight: bold; color: #065f46; margin-bottom: 16px;">Live Preview</h3>
+              <div style="display: flex; flex-direction: column; gap: 16px;">
+                <div style="padding: 16px; background: #f9fafb; border-radius: 8px;">
+                  <p style="font-size: 12px; color: #6b7280; margin-bottom: 4px;">Date</p>
+                  <p id="previewDate" style="font-size: 16px; font-weight: 600; color: #065f46;">December 15, 2025</p>
+                </div>
+                <div style="padding: 16px; background: #f9fafb; border-radius: 8px;">
+                  <p style="font-size: 12px; color: #6b7280; margin-bottom: 4px;">Time</p>
+                  <p id="previewTime" style="font-size: 16px; font-weight: 600; color: #065f46;">6:00 PM - 11:00 PM</p>
+                </div>
+                <div style="padding: 16px; background: #f9fafb; border-radius: 8px;">
+                  <p style="font-size: 12px; color: #6b7280; margin-bottom: 4px;">Venue</p>
+                  <p id="previewVenue" style="font-size: 16px; font-weight: 600; color: #065f46;">Grand Ballroom</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Banner Image Section -->
+        <div>
+          <h3 style="font-size: 22px; font-weight: bold; color: #065f46; margin-bottom: 24px; display: flex; align-items: center; gap: 12px;">
+            <svg style="width: 24px; height: 24px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+            </svg>
+            Banner Image
+          </h3>
+          
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 32px; align-items: start;">
+            <!-- Upload Form Column -->
+            <form id="bannerUploadForm" style="background: #f0fdf4; padding: 32px; border-radius: 16px; border: 2px solid #bbf7d0;">
+              <!-- File Input -->
+              <div style="margin-bottom: 24px;">
+                <label style="display: block; font-size: 14px; font-weight: 600; color: #065f46; margin-bottom: 8px;">
+                  Upload Banner Image <span style="color: #ef4444;">*</span>
+                </label>
+                <input 
+                  type="file" 
+                  id="bannerImage" 
+                  name="bannerImage" 
+                  accept="image/jpeg,image/png"
+                  required
+                  style="width: 100%; padding: 12px 16px; border: 2px solid #d1d5db; border-radius: 8px; font-size: 16px; transition: border-color 0.3s; background: white;"
+                  onchange="previewBannerImage(this)"
+                />
+                <p style="font-size: 12px; color: #6b7280; margin-top: 8px;">
+                  JPG or PNG only. Max size: 5MB. Recommended: 1200x400px
+                </p>
+              </div>
+
+              <!-- Preview Container -->
+              <div id="bannerPreviewContainer" style="display: none; margin-bottom: 24px; position: relative;">
+                <label style="display: block; font-size: 14px; font-weight: 600; color: #065f46; margin-bottom: 8px;">
+                  Preview
+                </label>
+                <div style="position: relative; border: 2px solid #d1d5db; border-radius: 8px; overflow: hidden; background: white;">
+                  <img id="bannerPreview" style="width: 100%; height: auto; display: block;" />
+                  <button 
+                    type="button" 
+                    onclick="clearBannerPreview()"
+                    style="position: absolute; top: 8px; right: 8px; background: rgba(239, 68, 68, 0.9); color: white; border: none; border-radius: 50%; width: 32px; height: 32px; cursor: pointer; display: flex; align-items: center; justify-content: center;"
+                  >
+                    <svg style="width: 16px; height: 16px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Success/Error Messages -->
+              <div id="bannerMessage" style="display: none; padding: 12px 16px; border-radius: 8px; margin-bottom: 16px; font-weight: 600;"></div>
+
+              <!-- Upload Button -->
+              <button 
+                type="submit" 
+                id="uploadBannerBtn"
+                style="width: 100%; padding: 16px 32px; background: linear-gradient(135deg, #16a34a, #059669); color: white; font-size: 18px; font-weight: bold; border: none; border-radius: 12px; cursor: pointer; box-shadow: 0 10px 30px rgba(22, 163, 74, 0.3); transition: all 0.3s;"
+                onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 15px 40px rgba(22, 163, 74, 0.4)'"
+                onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 10px 30px rgba(22, 163, 74, 0.3)'"
+              >
+                Upload Banner
+              </button>
+            </form>
+
+            <!-- Current Banner Column -->
+            <div style="padding: 32px; background: white; border-radius: 16px; border: 2px solid #e5e7eb; position: sticky; top: 20px;">
+              <h3 style="font-size: 18px; font-weight: bold; color: #065f46; margin-bottom: 16px;">Current Banner</h3>
+              <div id="currentBannerContainer" style="border: 2px solid #d1d5db; border-radius: 8px; overflow: hidden; background: #f9fafb; min-height: 200px; display: flex; align-items: center; justify-content: center;">
+                <div id="noBannerPlaceholder" style="text-align: center; color: #9ca3af; padding: 40px 20px;">
+                  <svg style="width: 48px; height: 48px; margin: 0 auto 12px; color: #d1d5db;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                  </svg>
+                  <p style="font-size: 14px;">No banner uploaded</p>
+                </div>
+                <img id="currentBanner" style="width: 100%; height: auto; display: none;" />
+              </div>
+              <button 
+                id="deleteBannerBtn"
+                onclick="deleteBanner()"
+                style="width: 100%; margin-top: 16px; padding: 12px 24px; background: #ef4444; color: white; font-size: 16px; font-weight: 600; border: none; border-radius: 8px; cursor: pointer; display: none;"
+              >
+                Delete Banner
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pending Reviews Content -->
+      <div id="pendingReviewsContent" class="content-section" style="display: none;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px;">
+          <div>
+            <h2 style="font-size: 28px; font-weight: bold; color: #065f46; margin-bottom: 8px;">Pending Reviews</h2>
+            <p style="color: #6b7280; font-size: 14px;">Review and approve ticket registrations</p>
+          </div>
+          <button onclick="loadPendingRegistrations()" style="padding: 12px 24px; background: #059669; color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px;">
+            <svg style="width: 16px; height: 16px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+            </svg>
+            Refresh
+          </button>
+        </div>
+
+        <!-- Search Bar -->
+        <div style="margin-bottom: 24px;">
+          <div style="position: relative;">
+            <input 
+              type="text" 
+              id="pendingSearchInput" 
+              placeholder="Search by name..."
+              onkeyup="filterPendingRegistrations()"
+              style="width: 100%; padding: 12px 16px 12px 44px; border: 2px solid #d1d5db; border-radius: 8px; font-size: 14px; transition: border-color 0.3s;"
+              onfocus="this.style.borderColor='#16a34a'" 
+              onblur="this.style.borderColor='#d1d5db'"
+            />
+            <svg style="position: absolute; left: 14px; top: 50%; transform: translateY(-50%); width: 20px; height: 20px; color: #9ca3af; pointer-events: none;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+          </div>
+        </div>
+
+        <!-- Loading State -->
+        <div id="loadingState" style="display: none; text-align: center; padding: 60px 20px;">
+          <div style="display: inline-block; width: 48px; height: 48px; border: 4px solid #bbf7d0; border-top-color: #059669; border-radius: 50%; animation: spin 1s linear infinite;"></div>
+          <p style="margin-top: 16px; color: #6b7280;">Loading registrations...</p>
+        </div>
+
+        <!-- Empty State -->
+        <div id="emptyState" style="display: none; text-align: center; padding: 60px 20px; background: #f9fafb; border-radius: 16px;">
+          <svg style="width: 64px; height: 64px; margin: 0 auto 16px; color: #d1d5db;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+          </svg>
+          <h3 style="font-size: 18px; font-weight: 600; color: #374151; margin-bottom: 8px;">No Pending Reviews</h3>
+          <p style="color: #6b7280; font-size: 14px;">All registrations have been reviewed!</p>
+        </div>
+
+        <!-- Registrations Table -->
+        <div id="registrationsTable" style="display: none; background: white; border-radius: 16px; border: 2px solid #e5e7eb; overflow: hidden;">
+          <div style="overflow-x: auto;">
+            <table style="width: 100%; border-collapse: collapse;">
+              <thead>
+                <tr style="background: #f9fafb; border-bottom: 2px solid #e5e7eb;">
+                  <th style="padding: 16px; text-align: left; font-size: 12px; font-weight: 600; color: #6b7280; text-transform: uppercase;">Name</th>
+                  <th style="padding: 16px; text-align: left; font-size: 12px; font-weight: 600; color: #6b7280; text-transform: uppercase;">Email</th>
+                  <th style="padding: 16px; text-align: left; font-size: 12px; font-weight: 600; color: #6b7280; text-transform: uppercase;">Contact</th>
+                  <th style="padding: 16px; text-align: left; font-size: 12px; font-weight: 600; color: #6b7280; text-transform: uppercase;">Amount</th>
+                  <th style="padding: 16px; text-align: left; font-size: 12px; font-weight: 600; color: #6b7280; text-transform: uppercase;">Submitted</th>
+                  <th style="padding: 16px; text-align: left; font-size: 12px; font-weight: 600; color: #6b7280; text-transform: uppercase;">Bank Slip</th>
+                  <th style="padding: 16px; text-align: left; font-size: 12px; font-weight: 600; color: #6b7280; text-transform: uppercase;">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="registrationsTableBody">
+                <!-- Rows will be dynamically inserted here -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Verified Payments Content -->
+      <div id="verifiedPaymentsContent" class="content-section" style="display: none;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px;">
+          <div>
+            <h2 style="font-size: 28px; font-weight: bold; color: #065f46; margin-bottom: 8px;">Verified Payments</h2>
+            <p style="color: #6b7280; font-size: 14px;">All approved registrations with ticket details</p>
+          </div>
+          <button onclick="loadVerifiedPayments()" style="padding: 12px 24px; background: #059669; color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px;">
+            <svg style="width: 16px; height: 16px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+            </svg>
+            Refresh
+          </button>
+        </div>
+
+        <!-- Search Bar -->
+        <div style="margin-bottom: 24px;">
+          <div style="position: relative;">
+            <input 
+              type="text" 
+              id="verifiedSearchInput" 
+              placeholder="Search by name or ticket ID..."
+              onkeyup="filterVerifiedPayments()"
+              style="width: 100%; padding: 12px 16px 12px 44px; border: 2px solid #d1d5db; border-radius: 8px; font-size: 14px; transition: border-color 0.3s;"
+              onfocus="this.style.borderColor='#16a34a'" 
+              onblur="this.style.borderColor='#d1d5db'"
+            />
+            <svg style="position: absolute; left: 14px; top: 50%; transform: translateY(-50%); width: 20px; height: 20px; color: #9ca3af; pointer-events: none;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+          </div>
+        </div>
+
+        <!-- Loading State -->
+        <div id="verifiedLoadingState" style="display: none; text-align: center; padding: 60px 20px;">
+          <div style="display: inline-block; width: 48px; height: 48px; border: 4px solid #bbf7d0; border-top-color: #059669; border-radius: 50%; animation: spin 1s linear infinite;"></div>
+          <p style="margin-top: 16px; color: #6b7280;">Loading verified payments...</p>
+        </div>
+
+        <!-- Empty State -->
+        <div id="verifiedEmptyState" style="display: none; text-align: center; padding: 60px 20px; background: #f9fafb; border-radius: 16px;">
+          <svg style="width: 64px; height: 64px; margin: 0 auto 16px; color: #d1d5db;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <h3 style="font-size: 18px; font-weight: 600; color: #374151; margin-bottom: 8px;">No Verified Payments Yet</h3>
+          <p style="color: #6b7280; font-size: 14px;">Approved registrations will appear here</p>
+        </div>
+
+        <!-- Verified Payments Table -->
+        <div id="verifiedPaymentsTable" style="display: none; background: white; border-radius: 16px; border: 2px solid #e5e7eb; overflow: hidden;">
+          <div style="overflow-x: auto;">
+            <table style="width: 100%; border-collapse: collapse;">
+              <thead>
+                <tr style="background: #f9fafb; border-bottom: 2px solid #e5e7eb;">
+                  <th style="padding: 16px; text-align: left; font-size: 12px; font-weight: 600; color: #6b7280; text-transform: uppercase;">Ticket ID</th>
+                  <th style="padding: 16px; text-align: left; font-size: 12px; font-weight: 600; color: #6b7280; text-transform: uppercase;">Name</th>
+                  <th style="padding: 16px; text-align: left; font-size: 12px; font-weight: 600; color: #6b7280; text-transform: uppercase;">Email</th>
+                  <th style="padding: 16px; text-align: left; font-size: 12px; font-weight: 600; color: #6b7280; text-transform: uppercase;">Contact</th>
+                  <th style="padding: 16px; text-align: left; font-size: 12px; font-weight: 600; color: #6b7280; text-transform: uppercase;">Amount</th>
+                  <th style="padding: 16px; text-align: left; font-size: 12px; font-weight: 600; color: #6b7280; text-transform: uppercase;">Approved Date</th>
+                  <th style="padding: 16px; text-align: left; font-size: 12px; font-weight: 600; color: #6b7280; text-transform: uppercase;">Approved By</th>
+                  <th style="padding: 16px; text-align: left; font-size: 12px; font-weight: 600; color: #6b7280; text-transform: uppercase;">Bank Slip</th>
+                </tr>
+              </thead>
+              <tbody id="verifiedPaymentsTableBody">
+                <!-- Rows will be dynamically inserted here -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Total Registrations Content -->
+      <div id="totalRegistrationsContent" class="content-section" style="display: none;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px;">
+          <div>
+            <h2 style="font-size: 28px; font-weight: bold; color: #065f46; margin-bottom: 8px;">Total Registrations</h2>
+            <p style="color: #6b7280; font-size: 14px;">All verified ticket registrations</p>
+          </div>
+          <div style="display: flex; gap: 12px;">
+            <div style="background: #f0fdf4; padding: 12px 20px; border-radius: 8px; border: 2px solid #bbf7d0;">
+              <span style="color: #6b7280; font-size: 12px; font-weight: 600;">Total Count:</span>
+              <span id="totalRegCount" style="color: #16a34a; font-size: 20px; font-weight: 700; margin-left: 8px;">0</span>
+            </div>
+            <button onclick="loadTotalRegistrations()" style="padding: 12px 24px; background: #059669; color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px;">
+              <svg style="width: 16px; height: 16px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+              </svg>
+              Refresh
+            </button>
+          </div>
+        </div>
+
+        <!-- Search Bar -->
+        <div style="margin-bottom: 24px;">
+          <div style="position: relative;">
+            <input 
+              type="text" 
+              id="totalRegSearchInput" 
+              placeholder="Search by name or ticket ID..."
+              onkeyup="filterTotalRegistrations()"
+              style="width: 100%; padding: 12px 16px 12px 44px; border: 2px solid #d1d5db; border-radius: 8px; font-size: 14px; transition: border-color 0.3s;"
+              onfocus="this.style.borderColor='#16a34a'" 
+              onblur="this.style.borderColor='#d1d5db'"
+            />
+            <svg style="position: absolute; left: 14px; top: 50%; transform: translateY(-50%); width: 20px; height: 20px; color: #9ca3af; pointer-events: none;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+          </div>
+        </div>
+
+        <!-- Loading State -->
+        <div id="totalRegLoadingState" style="display: none; text-align: center; padding: 60px 20px;">
+          <div style="display: inline-block; width: 48px; height: 48px; border: 4px solid #bbf7d0; border-top-color: #059669; border-radius: 50%; animation: spin 1s linear infinite;"></div>
+          <p style="margin-top: 16px; color: #6b7280;">Loading registrations...</p>
+        </div>
+
+        <!-- Empty State -->
+        <div id="totalRegEmptyState" style="display: none; text-align: center; padding: 60px 20px; background: #f9fafb; border-radius: 16px;">
+          <svg style="width: 64px; height: 64px; margin: 0 auto 16px; color: #d1d5db;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z" />
+          </svg>
+          <h3 style="font-size: 18px; font-weight: 600; color: #374151; margin-bottom: 8px;">No Registrations Yet</h3>
+          <p style="color: #6b7280; font-size: 14px;">Verified registrations will appear here</p>
+        </div>
+
+        <!-- Total Registrations Table -->
+        <div id="totalRegistrationsTable" style="display: none; background: white; border-radius: 16px; border: 2px solid #e5e7eb; overflow: hidden;">
+          <div style="overflow-x: auto;">
+            <table style="width: 100%; border-collapse: collapse;">
+              <thead>
+                <tr style="background: #f9fafb; border-bottom: 2px solid #e5e7eb;">
+                  <th style="padding: 16px; text-align: left; font-size: 12px; font-weight: 600; color: #6b7280; text-transform: uppercase;">Ticket ID</th>
+                  <th style="padding: 16px; text-align: left; font-size: 12px; font-weight: 600; color: #6b7280; text-transform: uppercase;">Name</th>
+                  <th style="padding: 16px; text-align: left; font-size: 12px; font-weight: 600; color: #6b7280; text-transform: uppercase;">Email</th>
+                  <th style="padding: 16px; text-align: left; font-size: 12px; font-weight: 600; color: #6b7280; text-transform: uppercase;">Contact</th>
+                  <th style="padding: 16px; text-align: left; font-size: 12px; font-weight: 600; color: #6b7280; text-transform: uppercase;">Amount</th>
+                  <th style="padding: 16px; text-align: left; font-size: 12px; font-weight: 600; color: #6b7280; text-transform: uppercase;">Submitted</th>
+                  <th style="padding: 16px; text-align: left; font-size: 12px; font-weight: 600; color: #6b7280; text-transform: uppercase;">Bank Slip</th>
+                  <th style="padding: 16px; text-align: left; font-size: 12px; font-weight: 600; color: #6b7280; text-transform: uppercase;">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="totalRegistrationsTableBody">
+                <!-- Rows will be dynamically inserted here -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Custom Modal Dialogs -->
+  <div id="customModalOverlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(4px); z-index: 9999; animation: fadeIn 0.2s;">
+    <div id="customModalContainer" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; border-radius: 16px; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3); min-width: 400px; max-width: 500px; animation: slideIn 0.3s;">
+      <!-- Modal Header -->
+      <div id="customModalHeader" style="padding: 24px 24px 16px; display: flex; align-items: center; gap: 16px; border-bottom: 2px solid #f0f0f0;">
+        <div id="customModalIcon" style="width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 24px;"></div>
+        <h3 id="customModalTitle" style="flex: 1; font-size: 20px; font-weight: 700; color: #065f46;"></h3>
+      </div>
+      
+      <!-- Modal Body -->
+      <div id="customModalBody" style="padding: 24px;">
+        <p id="customModalMessage" style="font-size: 15px; color: #374151; line-height: 1.6; margin-bottom: 20px;"></p>
+        <input type="text" id="customModalInput" style="display: none; width: 100%; padding: 12px 16px; border: 2px solid #d1d5db; border-radius: 8px; font-size: 15px; outline: none; transition: all 0.3s;" placeholder="Enter your response...">
+      </div>
+      
+      <!-- Modal Footer -->
+      <div id="customModalFooter" style="padding: 16px 24px 24px; display: flex; justify-content: flex-end; gap: 12px;">
+        <button id="customModalCancelBtn" style="display: none; padding: 12px 24px; background: #f3f4f6; color: #374151; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.3s; font-size: 15px;">Cancel</button>
+        <button id="customModalConfirmBtn" style="padding: 12px 24px; background: linear-gradient(135deg, #16a34a, #059669); color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.3s; font-size: 15px; box-shadow: 0 4px 12px rgba(22, 163, 74, 0.3);">OK</button>
+      </div>
+    </div>
+  </div>
+
+  <style>
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes slideIn {
+      from { 
+        opacity: 0; 
+        transform: translate(-50%, -45%);
+      }
+      to { 
+        opacity: 1; 
+        transform: translate(-50%, -50%);
+      }
+    }
+
+    #customModalCancelBtn:hover {
+      background: #e5e7eb;
+      transform: translateY(-1px);
+    }
+
+    #customModalConfirmBtn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(22, 163, 74, 0.4);
+    }
+
+    #customModalInput:focus {
+      border-color: #16a34a;
+      box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.1);
+    }
+
+    /* Responsive */
+    @media (max-width: 600px) {
+      #customModalContainer {
+        min-width: 90%;
+        max-width: 90%;
+      }
+    }
+  </style>
+
+  <script>
+    // API Configuration
+    const API_URL = window.__API_URL__ || 'http://localhost:3001';
+    
+    // Custom Modal Dialog Functions
+    const modalIcons = {
+      success: { emoji: '✅', bg: '#dcfce7', color: '#16a34a' },
+      error: { emoji: '❌', bg: '#fee2e2', color: '#dc2626' },
+      warning: { emoji: '⚠️', bg: '#fef3c7', color: '#f59e0b' },
+      info: { emoji: 'ℹ️', bg: '#dbeafe', color: '#2563eb' },
+      question: { emoji: '❓', bg: '#e0e7ff', color: '#6366f1' }
+    };
+
+    function showCustomModal(options) {
+      return new Promise((resolve) => {
+        const overlay = document.getElementById('customModalOverlay');
+        const container = document.getElementById('customModalContainer');
+        const icon = document.getElementById('customModalIcon');
+        const title = document.getElementById('customModalTitle');
+        const message = document.getElementById('customModalMessage');
+        const input = document.getElementById('customModalInput');
+        const footer = document.getElementById('customModalFooter');
+        const cancelBtn = document.getElementById('customModalCancelBtn');
+        const confirmBtn = document.getElementById('customModalConfirmBtn');
+
+        // Reset and configure
+        const iconData = modalIcons[options.type || 'info'];
+        icon.textContent = iconData.emoji;
+        icon.style.background = iconData.bg;
+        icon.style.color = iconData.color;
+        
+        title.textContent = options.title || 'Notification';
+        message.innerHTML = options.message.replace(/\n/g, '<br>');
+        
+        confirmBtn.textContent = options.confirmText || 'OK';
+        cancelBtn.textContent = options.cancelText || 'Cancel';
+
+        // Show/hide input for prompt
+        if (options.showInput) {
+          input.style.display = 'block';
+          input.value = options.defaultValue || '';
+          input.placeholder = options.placeholder || 'Enter your response...';
+          setTimeout(() => input.focus(), 100);
+        } else {
+          input.style.display = 'none';
+        }
+
+        // Show/hide cancel button
+        if (options.showCancel) {
+          cancelBtn.style.display = 'block';
+        } else {
+          cancelBtn.style.display = 'none';
+        }
+
+        // Show modal
+        overlay.style.display = 'block';
+        container.style.animation = 'slideIn 0.3s';
+
+        // Event handlers
+        const handleConfirm = () => {
+          if (options.showInput) {
+            const value = input.value.trim();
+            if (options.required && !value) {
+              input.style.borderColor = '#dc2626';
+              input.focus();
+              return;
+            }
+            cleanup();
+            resolve({ confirmed: true, value });
+          } else {
+            cleanup();
+            resolve({ confirmed: true });
+          }
+        };
+
+        const handleCancel = () => {
+          cleanup();
+          resolve({ confirmed: false });
+        };
+
+        const handleEscape = (e) => {
+          if (e.key === 'Escape') handleCancel();
+        };
+
+        const handleEnter = (e) => {
+          if (e.key === 'Enter' && !options.showInput) {
+            handleConfirm();
+          } else if (e.key === 'Enter' && options.showInput && e.target === input) {
+            handleConfirm();
+          }
+        };
+
+        const cleanup = () => {
+          overlay.style.display = 'none';
+          document.removeEventListener('keydown', handleEscape);
+          document.removeEventListener('keydown', handleEnter);
+          confirmBtn.onclick = null;
+          cancelBtn.onclick = null;
+        };
+
+        confirmBtn.onclick = handleConfirm;
+        cancelBtn.onclick = handleCancel;
+        document.addEventListener('keydown', handleEscape);
+        document.addEventListener('keydown', handleEnter);
+
+        // Click overlay to close (only for alerts)
+        if (!options.showCancel) {
+          overlay.onclick = (e) => {
+            if (e.target === overlay) handleConfirm();
+          };
+        }
+      });
+    }
+
+    // Wrapper functions to replace native dialogs
+    async function customAlert(message, type = 'info') {
+      await showCustomModal({
+        title: type === 'success' ? 'Success' : type === 'error' ? 'Error' : type === 'warning' ? 'Warning' : 'Information',
+        message,
+        type,
+        showCancel: false
+      });
+    }
+
+    async function customConfirm(message, title = 'Confirm Action') {
+      const result = await showCustomModal({
+        title,
+        message,
+        type: 'question',
+        showCancel: true,
+        confirmText: 'Confirm',
+        cancelText: 'Cancel'
+      });
+      return result.confirmed;
+    }
+
+    async function customPrompt(message, defaultValue = '', placeholder = 'Enter your response...') {
+      const result = await showCustomModal({
+        title: 'Input Required',
+        message,
+        type: 'info',
+        showInput: true,
+        showCancel: true,
+        defaultValue,
+        placeholder,
+        required: true,
+        confirmText: 'Submit',
+        cancelText: 'Cancel'
+      });
+      return result.confirmed ? result.value : null;
+    }
+
+    // Check if user is logged in
+    if (localStorage.getItem('adminLoggedIn') !== 'true') {
+      window.location.replace('/admin-login.html');
+    }
+
+    // Set username in header
+    const username = localStorage.getItem('adminUsername') || 'Admin';
+    document.getElementById('userName').textContent = username;
+    document.getElementById('userAvatar').textContent = username.charAt(0).toUpperCase();
+
+    // Session timeout management (1 minute of inactivity)
+    let inactivityTimer;
+    const INACTIVITY_TIMEOUT = 120000; // 2 minutes in milliseconds
+
+    function resetInactivityTimer() {
+      // Clear existing timer
+      clearTimeout(inactivityTimer);
+      
+      // Set last activity timestamp
+      localStorage.setItem('lastActivity', Date.now().toString());
+      
+      // Start new timer
+      inactivityTimer = setTimeout(async () => {
+        // Auto logout after 1 minute of inactivity
+        localStorage.removeItem('adminLoggedIn');
+        localStorage.removeItem('adminUsername');
+        localStorage.removeItem('lastActivity');
+        await customAlert('⏱️ Session expired due to inactivity. Please login again.', 'warning');
+        window.location.replace('/admin-login.html');
+      }, INACTIVITY_TIMEOUT);
+    }
+
+    // Check if session expired (on page load)
+    async function checkSessionExpiry() {
+      const lastActivity = localStorage.getItem('lastActivity');
+      if (lastActivity) {
+        const timeSinceLastActivity = Date.now() - parseInt(lastActivity);
+        if (timeSinceLastActivity > INACTIVITY_TIMEOUT) {
+          // Session expired
+          localStorage.removeItem('adminLoggedIn');
+          localStorage.removeItem('adminUsername');
+          localStorage.removeItem('lastActivity');
+          await customAlert('⏱️ Session expired due to inactivity. Please login again.', 'warning');
+          window.location.replace('/admin-login.html');
+          return;
+        }
+      }
+    }
+
+    // Check session expiry on load
+    checkSessionExpiry();
+
+    // Reset timer on user activity
+    const activityEvents = ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart', 'click'];
+    activityEvents.forEach(event => {
+      document.addEventListener(event, resetInactivityTimer, true);
+    });
+
+    // Initialize timer
+    resetInactivityTimer();
+
+    // Update session timer display
+    function updateSessionTimerDisplay() {
+      const sessionTimerElement = document.getElementById('sessionTimer');
+      const lastActivity = localStorage.getItem('lastActivity');
+      
+      if (lastActivity) {
+        const timeSinceLastActivity = Date.now() - parseInt(lastActivity);
+        const remainingTime = INACTIVITY_TIMEOUT - timeSinceLastActivity;
+        const remainingSeconds = Math.max(0, Math.floor(remainingTime / 1000));
+        
+        if (remainingSeconds > 30) {
+          sessionTimerElement.style.color = '#ffffff';
+          sessionTimerElement.style.fontWeight = '500';
+          sessionTimerElement.innerHTML = `
+            <svg style="width: 10px; height: 10px; display: inline; vertical-align: middle;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            Active (${remainingSeconds}s)
+          `;
+        } else if (remainingSeconds > 15) {
+          sessionTimerElement.style.color = '#fcd34d';
+          sessionTimerElement.style.fontWeight = '600';
+          sessionTimerElement.innerHTML = `
+            <svg style="width: 10px; height: 10px; display: inline; vertical-align: middle;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            Expires in ${remainingSeconds}s
+          `;
+        } else {
+          sessionTimerElement.style.color = '#fca5a5';
+          sessionTimerElement.style.fontWeight = '700';
+          sessionTimerElement.innerHTML = `
+            <svg style="width: 10px; height: 10px; display: inline; vertical-align: middle;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            </svg>
+            Expires in ${remainingSeconds}s!
+          `;
+        }
+      }
+    }
+
+    // Update display every second
+    setInterval(updateSessionTimerDisplay, 1000);
+    updateSessionTimerDisplay();
+
+    // Logout function
+    async function logout() {
+      const confirmed = await customConfirm('Are you sure you want to logout?', 'Confirm Logout');
+      if (confirmed) {
+        clearTimeout(inactivityTimer);
+        localStorage.removeItem('adminLoggedIn');
+        localStorage.removeItem('adminUsername');
+        localStorage.removeItem('lastActivity');
+        window.location.replace('/admin-login.html');
+      }
+    }
+
+    // Navigation handling
+    const navItems = document.querySelectorAll('.nav-item');
+    const dashboardContent = document.getElementById('dashboardContent');
+    const updateDetailsContent = document.getElementById('updateDetailsContent');
+    const pendingReviewsContent = document.getElementById('pendingReviewsContent');
+    const verifiedPaymentsContent = document.getElementById('verifiedPaymentsContent');
+    const totalRegistrationsContent = document.getElementById('totalRegistrationsContent');
+    const updateDetailsNav = document.getElementById('updateDetailsNav');
+
+    navItems.forEach((item, index) => {
+      item.addEventListener('click', function() {
+        // Remove active class from all items
+        navItems.forEach(nav => nav.classList.remove('active'));
+        // Add active class to clicked item
+        this.classList.add('active');
+
+        // Hide all content sections
+        dashboardContent.style.display = 'none';
+        updateDetailsContent.style.display = 'none';
+        pendingReviewsContent.style.display = 'none';
+        verifiedPaymentsContent.style.display = 'none';
+        totalRegistrationsContent.style.display = 'none';
+
+        // Show selected content
+        if (this === updateDetailsNav) {
+          updateDetailsContent.style.display = 'block';
+          loadEventDetails();
+          loadCurrentBanner(); // Load banner when Update Details section opens
+        } else if (index === 1) { // Pending Reviews
+          pendingReviewsContent.style.display = 'block';
+          loadPendingRegistrations();
+        } else if (index === 2) { // Verified Payments
+          verifiedPaymentsContent.style.display = 'block';
+          loadVerifiedPayments();
+        } else if (index === 3) { // Total Registrations
+          totalRegistrationsContent.style.display = 'block';
+          loadTotalRegistrations();
+        } else if (index === 0) { // Dashboard
+          dashboardContent.style.display = 'flex';
+          loadDashboardStats();
+        }
+      });
+    });
+
+    // Load event details from backend
+    async function loadEventDetails() {
+      try {
+        const response = await fetch(`${API_URL}/api/event-details`);
+        if (response.ok) {
+          const data = await response.json();
+          if (data.success && data.data) {
+            // Store the original date string for preview
+            const dateString = data.data.date || '';
+            
+            // Populate form fields
+            document.getElementById('eventTime').value = data.data.time || '';
+            document.getElementById('eventVenue').value = data.data.venue || '';
+            
+            // Convert formatted date string back to YYYY-MM-DD for input field
+            if (dateString) {
+              try {
+                const parsedDate = new Date(dateString);
+                if (!isNaN(parsedDate.getTime())) {
+                  const year = parsedDate.getFullYear();
+                  const month = String(parsedDate.getMonth() + 1).padStart(2, '0');
+                  const day = String(parsedDate.getDate()).padStart(2, '0');
+                  document.getElementById('eventDate').value = `${year}-${month}-${day}`;
+                }
+              } catch (e) {
+                console.error('Error parsing date:', e);
+              }
+            }
+            
+            // Update preview with loaded data
+            updatePreview();
+          }
+        }
+      } catch (error) {
+        console.error('Error loading event details:', error);
+      }
+    }
+
+    // Update preview
+    function updatePreview() {
+      const dateInput = document.getElementById('eventDate').value;
+      const timeInput = document.getElementById('eventTime').value;
+      const venueInput = document.getElementById('eventVenue').value;
+
+      if (dateInput) {
+        const date = new Date(dateInput);
+        const formattedDate = date.toLocaleDateString('en-US', { 
+          year: 'numeric', 
+          month: 'long', 
+          day: 'numeric' 
+        });
+        document.getElementById('previewDate').textContent = formattedDate;
+      }
+      
+      if (timeInput) {
+        document.getElementById('previewTime').textContent = timeInput;
+      }
+      
+      if (venueInput) {
+        document.getElementById('previewVenue').textContent = venueInput;
+      }
+    }
+
+    // Add event listeners for live preview
+    document.getElementById('eventDate').addEventListener('input', updatePreview);
+    document.getElementById('eventTime').addEventListener('input', updatePreview);
+    document.getElementById('eventVenue').addEventListener('input', updatePreview);
+
+    // Form submission
+    document.getElementById('updateDetailsForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      
+      const saveBtn = document.getElementById('saveBtn');
+      const messageDiv = document.getElementById('updateMessage');
+      
+      // Get form values
+      const dateInput = document.getElementById('eventDate').value;
+      const timeInput = document.getElementById('eventTime').value;
+      const venueInput = document.getElementById('eventVenue').value;
+
+      // Format date for display
+      const date = new Date(dateInput);
+      const formattedDate = date.toLocaleDateString('en-US', { 
+        year: 'numeric', 
+        month: 'long', 
+        day: 'numeric' 
+      });
+
+      // Disable button
+      saveBtn.disabled = true;
+      saveBtn.textContent = 'Saving...';
+
+      try {
+        const response = await fetch(`${API_URL}/api/event-details`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            date: formattedDate,
+            time: timeInput,
+            venue: venueInput
+          })
+        });
+
+        const data = await response.json();
+
+        if (response.ok && data.success) {
+          // Update preview with the newly saved values
+          document.getElementById('previewDate').textContent = formattedDate;
+          document.getElementById('previewTime').textContent = timeInput;
+          document.getElementById('previewVenue').textContent = venueInput;
+          
+          // Show success message
+          messageDiv.style.display = 'block';
+          messageDiv.style.backgroundColor = '#dcfce7';
+          messageDiv.style.color = '#16a34a';
+          messageDiv.style.border = '2px solid #16a34a';
+          messageDiv.textContent = '✅ Event details updated successfully!';
+          
+          // Hide message after 3 seconds
+          setTimeout(() => {
+            messageDiv.style.display = 'none';
+          }, 3000);
+        } else {
+          throw new Error(data.message || 'Failed to update details');
+        }
+      } catch (error) {
+        console.error('Error updating details:', error);
+        messageDiv.style.display = 'block';
+        messageDiv.style.backgroundColor = '#fee2e2';
+        messageDiv.style.color = '#dc2626';
+        messageDiv.style.border = '2px solid #dc2626';
+        messageDiv.textContent = '❌ ' + error.message;
+      } finally {
+        saveBtn.disabled = false;
+        saveBtn.textContent = 'Save Changes';
+      }
+    });
+
+    // Load dashboard stats
+    async function loadDashboardStats() {
+      try {
+        const response = await fetch(`${API_URL}/api/ticket-registrations/stats`);
+        if (response.ok) {
+          const data = await response.json();
+          if (data.success && data.data) {
+            // Update stat cards
+            const statCards = document.querySelectorAll('.stat-value');
+            statCards[0].textContent = data.data.total || 0;
+            statCards[1].textContent = data.data.approved || 0;
+            statCards[2].textContent = data.data.pending || 0;
+            
+            // Update total revenue with proper formatting
+            const totalRevenue = data.data.totalRevenue || 0;
+            statCards[3].textContent = `Rs ${totalRevenue.toLocaleString('en-US')}`;
+            
+            // Update pending count in label
+            const pendingChangeElement = statCards[2].nextElementSibling.nextElementSibling;
+            pendingChangeElement.innerHTML = `
+              <svg style="width: 12px; height: 12px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              ${data.data.pending} new
+            `;
+          }
+        }
+      } catch (error) {
+        console.error('Error loading dashboard stats:', error);
+      }
+    }
+
+    // Load initial dashboard stats
+    loadDashboardStats();
+    // Refresh stats every 30 seconds
+    setInterval(loadDashboardStats, 30000);
+
+    // Load pending registrations
+    async function loadPendingRegistrations() {
+      const loadingState = document.getElementById('loadingState');
+      const emptyState = document.getElementById('emptyState');
+      const registrationsTable = document.getElementById('registrationsTable');
+      const tableBody = document.getElementById('registrationsTableBody');
+
+      // Show loading
+      loadingState.style.display = 'block';
+      emptyState.style.display = 'none';
+      registrationsTable.style.display = 'none';
+
+      try {
+        const response = await fetch(`${API_URL}/api/ticket-registrations?status=pending`);
+        if (response.ok) {
+          const data = await response.json();
+          
+          loadingState.style.display = 'none';
+          
+          if (data.success && data.data && data.data.length > 0) {
+            // Show table with data
+            registrationsTable.style.display = 'block';
+            tableBody.innerHTML = data.data.map(reg => `
+              <tr style="border-bottom: 1px solid #e5e7eb;">
+                <td style="padding: 16px; color: #111827; font-weight: 500;">${escapeHtml(reg.name)}</td>
+                <td style="padding: 16px; color: #6b7280; font-size: 14px;">${escapeHtml(reg.email)}</td>
+                <td style="padding: 16px; color: #6b7280; font-size: 14px;">${escapeHtml(reg.contactNo)}</td>
+                <td style="padding: 16px; color: #059669; font-size: 14px; font-weight: 600;">Rs ${(reg.ticketPrice || 3000).toLocaleString('en-US')}</td>
+                <td style="padding: 16px; color: #6b7280; font-size: 14px;">${formatDate(reg.createdAt)}</td>
+                <td style="padding: 16px;">
+                  <button onclick="downloadBankSlip('${reg._id}')" style="padding: 6px 12px; background: #dbeafe; color: #2563eb; border: none; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 4px;">
+                    <svg style="width: 14px; height: 14px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                    Download
+                  </button>
+                </td>
+                <td style="padding: 16px;">
+                  <div style="display: flex; gap: 8px;">
+                    <button onclick="approveRegistration('${reg._id}')" style="padding: 8px 16px; background: #dcfce7; color: #16a34a; border: none; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 4px;">
+                      <svg style="width: 14px; height: 14px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                      </svg>
+                      Approve
+                    </button>
+                    <button onclick="rejectRegistration('${reg._id}')" style="padding: 8px 16px; background: #fee2e2; color: #dc2626; border: none; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 4px;">
+                      <svg style="width: 14px; height: 14px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                      Reject
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            `).join('');
+          } else {
+            // Show empty state
+            emptyState.style.display = 'block';
+          }
+        } else {
+          throw new Error('Failed to load registrations');
+        }
+      } catch (error) {
+        console.error('Error loading registrations:', error);
+        loadingState.style.display = 'none';
+        emptyState.style.display = 'block';
+        await customAlert('Failed to load registrations. Please try again.', 'error');
+      }
+    }
+
+    // Approve registration
+    async function approveRegistration(id) {
+      const confirmed = await customConfirm('Are you sure you want to approve this registration?This will generate a ticket ID and send approval email.', 'Confirm Approval');
+      if (!confirmed) {
+        return;
+      }
+
+      const username = localStorage.getItem('adminUsername') || 'Admin';
+      
+      try {
+        const response = await fetch(`${API_URL}/api/ticket-registrations/${id}/approve`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ reviewedBy: username })
+        });
+
+        const data = await response.json();
+
+        if (response.ok && data.success) {
+          await customAlert('✅ Registration approved successfully!.Ticket ID: ' + data.ticketId, 'success');
+          loadPendingRegistrations(); // Reload the list
+          loadDashboardStats(); // Update stats
+        } else {
+          throw new Error(data.message || 'Failed to approve registration');
+        }
+      } catch (error) {
+        console.error('Error approving registration:', error);
+        await customAlert('❌ Failed to approve registration:' + error.message, 'error');
+      }
+    }
+
+    // Reject registration
+    async function rejectRegistration(id) {
+      const confirmed = await customConfirm('⚠️ Are you sure you want to REJECT this registration?A rejection email will be sent to the user.The registration will be DELETED from the database.This action cannot be undone', 'Confirm Rejection');
+      if (!confirmed) {
+        return;
+      }
+
+      const reason = await customPrompt('Please enter a reason for rejection:(The user will receive this in their email)', 'Payment verification failed. Please ensure your bank slip shows the correct amount (Rs. 3,000) and all transaction details are clearly visible.', 'Enter rejection reason...');
+      
+      if (reason === null) {
+        return; // User cancelled
+      }
+
+      if (!reason.trim()) {
+        await customAlert('❌ Please provide a rejection reason.', 'warning');
+        return;
+      }
+
+      const username = localStorage.getItem('adminUsername') || 'Admin';
+      
+      try {
+        const response = await fetch(`${API_URL}/api/ticket-registrations/${id}/reject`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ 
+            reviewedBy: username,
+            reason: reason.trim()
+          })
+        });
+
+        const data = await response.json();
+
+        if (response.ok && data.success) {
+          await customAlert('✅ Registration rejected successfully!Rejection email sent to user.Registration removed from database', 'success');
+          loadPendingRegistrations(); // Reload the list
+          loadDashboardStats(); // Update stats
+        } else {
+          throw new Error(data.message || 'Failed to reject registration');
+        }
+      } catch (error) {
+        console.error('Error rejecting registration:', error);
+        await customAlert('❌ Failed to reject registration:' + error.message, 'error');
+      }
+    }
+
+    // Download bank slip
+    async function downloadBankSlip(id) {
+      try {
+        const response = await fetch(`${API_URL}/api/ticket-registrations/${id}/download-slip`);
+        
+        if (response.ok) {
+          const blob = await response.blob();
+          const contentDisposition = response.headers.get('Content-Disposition');
+          let filename = 'bank-slip';
+          
+          if (contentDisposition) {
+            const matches = /filename="?(.+?)"?$/i.exec(contentDisposition);
+            if (matches && matches[1]) {
+              filename = matches[1];
+            }
+          }
+          
+          // Create download link
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = filename;
+          document.body.appendChild(a);
+          a.click();
+          window.URL.revokeObjectURL(url);
+          document.body.removeChild(a);
+        } else {
+          throw new Error('Failed to download file');
+        }
+      } catch (error) {
+        console.error('Error downloading bank slip:', error);
+        await customAlert('❌ Failed to download bank slip:' + error.message, 'error');
+      }
+    }
+
+    // Helper function to escape HTML
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    // Helper function to format date
+    function formatDate(dateString) {
+      const date = new Date(dateString);
+      return date.toLocaleDateString('en-US', { 
+        month: 'short', 
+        day: 'numeric', 
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+    }
+
+    // ==================== VERIFIED PAYMENTS FUNCTIONS ====================
+
+    // Load verified payments
+    async function loadVerifiedPayments() {
+      const loadingState = document.getElementById('verifiedLoadingState');
+      const emptyState = document.getElementById('verifiedEmptyState');
+      const verifiedTable = document.getElementById('verifiedPaymentsTable');
+      const tableBody = document.getElementById('verifiedPaymentsTableBody');
+
+      // Show loading
+      loadingState.style.display = 'block';
+      emptyState.style.display = 'none';
+      verifiedTable.style.display = 'none';
+
+      try {
+        const response = await fetch(`${API_URL}/api/ticket-registrations?status=approved`);
+        if (response.ok) {
+          const data = await response.json();
+          
+          loadingState.style.display = 'none';
+          
+          if (data.success && data.data && data.data.length > 0) {
+            // Show table with data
+            verifiedTable.style.display = 'block';
+            tableBody.innerHTML = data.data.map(reg => `
+              <tr style="border-bottom: 1px solid #e5e7eb;">
+                <td style="padding: 16px;">
+                  <div style="display: flex; align-items: center; gap: 8px;">
+                    <span style="background: linear-gradient(135deg, #dcfce7, #bbf7d0); color: #16a34a; padding: 6px 12px; border-radius: 8px; font-weight: 700; font-family: 'Courier New', monospace; font-size: 13px; letter-spacing: 1px;">
+                      ${escapeHtml(reg.ticketId || 'N/A')}
+                    </span>
+                  </div>
+                </td>
+                <td style="padding: 16px; color: #111827; font-weight: 500;">${escapeHtml(reg.name)}</td>
+                <td style="padding: 16px; color: #6b7280; font-size: 14px;">${escapeHtml(reg.email)}</td>
+                <td style="padding: 16px; color: #6b7280; font-size: 14px;">${escapeHtml(reg.contactNo)}</td>
+                <td style="padding: 16px;">
+                  <div style="display: flex; flex-direction: column; gap: 2px;">
+                    <span style="color: #16a34a; font-size: 16px; font-weight: 700;">Rs ${(reg.ticketPrice || 3000).toLocaleString('en-US')}</span>
+                    <span style="background: #dcfce7; color: #16a34a; padding: 2px 8px; border-radius: 4px; font-size: 10px; font-weight: 700; display: inline-block; width: fit-content;">✓ VERIFIED</span>
+                  </div>
+                </td>
+                <td style="padding: 16px; color: #6b7280; font-size: 14px;">${formatDate(reg.reviewedAt || reg.createdAt)}</td>
+                <td style="padding: 16px; color: #059669; font-size: 13px; font-weight: 600;">${escapeHtml(reg.reviewedBy || 'Admin')}</td>
+                <td style="padding: 16px;">
+                  <button onclick="downloadBankSlip('${reg._id}')" style="padding: 6px 12px; background: #dbeafe; color: #2563eb; border: none; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 4px;">
+                    <svg style="width: 14px; height: 14px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                    Download
+                  </button>
+                </td>
+              </tr>
+            `).join('');
+          } else {
+            // Show empty state
+            emptyState.style.display = 'block';
+          }
+        } else {
+          throw new Error('Failed to load verified payments');
+        }
+      } catch (error) {
+        console.error('Error loading verified payments:', error);
+        loadingState.style.display = 'none';
+        emptyState.style.display = 'block';
+        await customAlert('Failed to load verified payments. Please try again.', 'error');
+      }
+    }
+
+    // Filter pending registrations by name
+    function filterPendingRegistrations() {
+      const searchInput = document.getElementById('pendingSearchInput').value.toLowerCase();
+      const tableBody = document.getElementById('registrationsTableBody');
+      const rows = tableBody.getElementsByTagName('tr');
+
+      let visibleCount = 0;
+      
+      for (let i = 0; i < rows.length; i++) {
+        const nameCell = rows[i].getElementsByTagName('td')[0];
+        if (nameCell) {
+          const nameText = nameCell.textContent || nameCell.innerText;
+          if (nameText.toLowerCase().indexOf(searchInput) > -1) {
+            rows[i].style.display = '';
+            visibleCount++;
+          } else {
+            rows[i].style.display = 'none';
+          }
+        }
+      }
+
+      // Show/hide empty state based on visible rows
+      const emptyState = document.getElementById('emptyState');
+      const registrationsTable = document.getElementById('registrationsTable');
+      
+      if (visibleCount === 0 && rows.length > 0) {
+        registrationsTable.style.display = 'none';
+        emptyState.style.display = 'block';
+        emptyState.querySelector('h3').textContent = 'No matches found';
+        emptyState.querySelector('p').textContent = `No registrations match "${document.getElementById('pendingSearchInput').value}"`;
+      } else if (rows.length > 0) {
+        registrationsTable.style.display = 'block';
+        emptyState.style.display = 'none';
+      }
+    }
+
+    // Filter verified payments by name or ticket ID
+    function filterVerifiedPayments() {
+      const searchInput = document.getElementById('verifiedSearchInput').value.toLowerCase();
+      const tableBody = document.getElementById('verifiedPaymentsTableBody');
+      const rows = tableBody.getElementsByTagName('tr');
+
+      let visibleCount = 0;
+      
+      for (let i = 0; i < rows.length; i++) {
+        const ticketIdCell = rows[i].getElementsByTagName('td')[0];
+        const nameCell = rows[i].getElementsByTagName('td')[1];
+        
+        if (ticketIdCell && nameCell) {
+          const ticketIdText = ticketIdCell.textContent || ticketIdCell.innerText;
+          const nameText = nameCell.textContent || nameCell.innerText;
+          
+          if (ticketIdText.toLowerCase().indexOf(searchInput) > -1 || 
+              nameText.toLowerCase().indexOf(searchInput) > -1) {
+            rows[i].style.display = '';
+            visibleCount++;
+          } else {
+            rows[i].style.display = 'none';
+          }
+        }
+      }
+
+      // Show/hide empty state based on visible rows
+      const emptyState = document.getElementById('verifiedEmptyState');
+      const verifiedTable = document.getElementById('verifiedPaymentsTable');
+      
+      if (visibleCount === 0 && rows.length > 0) {
+        verifiedTable.style.display = 'none';
+        emptyState.style.display = 'block';
+        emptyState.querySelector('h3').textContent = 'No matches found';
+        emptyState.querySelector('p').textContent = `No payments match "${document.getElementById('verifiedSearchInput').value}"`;
+      } else if (rows.length > 0) {
+        verifiedTable.style.display = 'block';
+        emptyState.style.display = 'none';
+      }
+    }
+
+    // ==================== END VERIFIED PAYMENTS FUNCTIONS ====================
+
+    // ==================== TOTAL REGISTRATIONS FUNCTIONS ====================
+
+    // Load total registrations (all approved)
+    async function loadTotalRegistrations() {
+      const loadingState = document.getElementById('totalRegLoadingState');
+      const emptyState = document.getElementById('totalRegEmptyState');
+      const totalRegTable = document.getElementById('totalRegistrationsTable');
+      const tableBody = document.getElementById('totalRegistrationsTableBody');
+      const countDisplay = document.getElementById('totalRegCount');
+
+      // Show loading
+      loadingState.style.display = 'block';
+      emptyState.style.display = 'none';
+      totalRegTable.style.display = 'none';
+
+      try {
+        const response = await fetch(`${API_URL}/api/ticket-registrations?status=approved`);
+        if (response.ok) {
+          const data = await response.json();
+          
+          loadingState.style.display = 'none';
+          
+          if (data.success && data.data && data.data.length > 0) {
+            // Update count
+            countDisplay.textContent = data.data.length;
+            
+            // Show table with data
+            totalRegTable.style.display = 'block';
+            tableBody.innerHTML = data.data.map(reg => `
+              <tr style="border-bottom: 1px solid #e5e7eb;">
+                <td style="padding: 16px;">
+                  <div style="display: flex; align-items: center; gap: 8px;">
+                    <span style="background: linear-gradient(135deg, #dcfce7, #bbf7d0); color: #16a34a; padding: 6px 12px; border-radius: 8px; font-weight: 700; font-family: 'Courier New', monospace; font-size: 13px; letter-spacing: 1px;">
+                      ${escapeHtml(reg.ticketId || 'N/A')}
+                    </span>
+                  </div>
+                </td>
+                <td style="padding: 16px; color: #111827; font-weight: 500;">${escapeHtml(reg.name)}</td>
+                <td style="padding: 16px; color: #6b7280; font-size: 14px;">${escapeHtml(reg.email)}</td>
+                <td style="padding: 16px; color: #6b7280; font-size: 14px;">${escapeHtml(reg.contactNo)}</td>
+                <td style="padding: 16px;">
+                  <div style="display: flex; flex-direction: column; gap: 2px;">
+                    <span style="color: #16a34a; font-size: 16px; font-weight: 700;">Rs ${(reg.ticketPrice || 3000).toLocaleString('en-US')}</span>
+                    <span style="background: #dcfce7; color: #16a34a; padding: 2px 8px; border-radius: 4px; font-size: 10px; font-weight: 700; display: inline-block; width: fit-content;">✓ VERIFIED</span>
+                  </div>
+                </td>
+                <td style="padding: 16px; color: #6b7280; font-size: 14px;">${formatDate(reg.createdAt)}</td>
+                <td style="padding: 16px;">
+                  <button onclick="downloadBankSlip('${reg._id}')" style="padding: 6px 12px; background: #dbeafe; color: #2563eb; border: none; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 4px;">
+                    <svg style="width: 14px; height: 14px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                    Download
+                  </button>
+                </td>
+                <td style="padding: 16px;">
+                  <button onclick="deleteRegistration('${reg._id}', '${escapeHtml(reg.name)}')" style="padding: 8px 16px; background: #fee2e2; color: #dc2626; border: none; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 4px;">
+                    <svg style="width: 14px; height: 14px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                    </svg>
+                    Delete
+                  </button>
+                </td>
+              </tr>
+            `).join('');
+          } else {
+            // Show empty state
+            countDisplay.textContent = '0';
+            emptyState.style.display = 'block';
+          }
+        } else {
+          throw new Error('Failed to load registrations');
+        }
+      } catch (error) {
+        console.error('Error loading total registrations:', error);
+        loadingState.style.display = 'none';
+        emptyState.style.display = 'block';
+        countDisplay.textContent = '0';
+        await customAlert('Failed to load registrations. Please try again.', 'error');
+      }
+    }
+
+    // Delete registration
+    async function deleteRegistration(id, name) {
+      const confirmed = await customConfirm(`⚠️ Are you sure you want to DELETE the registration for "${name}"?This action cannot be undone!`, 'Confirm Deletion');
+      if (!confirmed) {
+        return;
+      }
+
+      try {
+        const response = await fetch(`${API_URL}/api/ticket-registrations/${id}`, {
+          method: 'DELETE'
+        });
+
+        const data = await response.json();
+
+        if (response.ok && data.success) {
+          await customAlert('✅ Registration deleted successfully!', 'success');
+          loadTotalRegistrations(); // Reload the list
+          loadDashboardStats(); // Update stats
+        } else {
+          throw new Error(data.message || 'Failed to delete registration');
+        }
+      } catch (error) {
+        console.error('Error deleting registration:', error);
+        await customAlert('❌ Failed to delete registration:' + error.message, 'error');
+      }
+    }
+
+    // Filter total registrations by name or ticket ID
+    function filterTotalRegistrations() {
+      const searchInput = document.getElementById('totalRegSearchInput').value.toLowerCase();
+      const tableBody = document.getElementById('totalRegistrationsTableBody');
+      const rows = tableBody.getElementsByTagName('tr');
+
+      let visibleCount = 0;
+      
+      for (let i = 0; i < rows.length; i++) {
+        const ticketIdCell = rows[i].getElementsByTagName('td')[0];
+        const nameCell = rows[i].getElementsByTagName('td')[1];
+        
+        if (ticketIdCell && nameCell) {
+          const ticketIdText = ticketIdCell.textContent || ticketIdCell.innerText;
+          const nameText = nameCell.textContent || nameCell.innerText;
+          
+          if (ticketIdText.toLowerCase().indexOf(searchInput) > -1 || 
+              nameText.toLowerCase().indexOf(searchInput) > -1) {
+            rows[i].style.display = '';
+            visibleCount++;
+          } else {
+            rows[i].style.display = 'none';
+          }
+        }
+      }
+
+      // Show/hide empty state based on visible rows
+      const emptyState = document.getElementById('totalRegEmptyState');
+      const totalRegTable = document.getElementById('totalRegistrationsTable');
+      
+      if (visibleCount === 0 && rows.length > 0) {
+        totalRegTable.style.display = 'none';
+        emptyState.style.display = 'block';
+        emptyState.querySelector('h3').textContent = 'No matches found';
+        emptyState.querySelector('p').textContent = `No registrations match "${document.getElementById('totalRegSearchInput').value}"`;
+      } else if (rows.length > 0) {
+        totalRegTable.style.display = 'block';
+        emptyState.style.display = 'none';
+      }
+    }
+
+    // ==================== END TOTAL REGISTRATIONS FUNCTIONS ====================
+
+    // ==================== BANNER IMAGE FUNCTIONS ====================
+
+    // Preview banner image before upload
+    async function previewBannerImage(input) {
+      const file = input.files[0];
+      if (file) {
+        // Validate file type
+        if (!['image/jpeg', 'image/png'].includes(file.type)) {
+          await customAlert('❌ Please upload a JPG or PNG image only', 'warning');
+          input.value = '';
+          return;
+        }
+
+        // Validate file size (5MB max)
+        if (file.size > 5 * 1024 * 1024) {
+          await customAlert('❌ File size must be less than 5MB', 'warning');
+          input.value = '';
+          return;
+        }
+
+        // Show preview
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          document.getElementById('bannerPreview').src = e.target.result;
+          document.getElementById('bannerPreviewContainer').style.display = 'block';
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+
+    // Clear banner preview
+    function clearBannerPreview() {
+      document.getElementById('bannerImage').value = '';
+      document.getElementById('bannerPreview').src = '';
+      document.getElementById('bannerPreviewContainer').style.display = 'none';
+    }
+
+    // Load current banner
+    async function loadCurrentBanner() {
+      try {
+        const response = await fetch(`${API_URL}/api/event-details/banner`);
+        if (response.ok) {
+          const blob = await response.blob();
+          const imageUrl = URL.createObjectURL(blob);
+          
+          document.getElementById('currentBanner').src = imageUrl;
+          document.getElementById('currentBanner').style.display = 'block';
+          document.getElementById('noBannerPlaceholder').style.display = 'none';
+          document.getElementById('deleteBannerBtn').style.display = 'block';
+        } else {
+          // No banner uploaded yet
+          document.getElementById('currentBanner').style.display = 'none';
+          document.getElementById('noBannerPlaceholder').style.display = 'block';
+          document.getElementById('deleteBannerBtn').style.display = 'none';
+        }
+      } catch (error) {
+        console.error('Error loading banner:', error);
+        document.getElementById('currentBanner').style.display = 'none';
+        document.getElementById('noBannerPlaceholder').style.display = 'block';
+        document.getElementById('deleteBannerBtn').style.display = 'none';
+      }
+    }
+
+    // Banner upload form submission
+    document.getElementById('bannerUploadForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      
+      const uploadBtn = document.getElementById('uploadBannerBtn');
+      const messageDiv = document.getElementById('bannerMessage');
+      const fileInput = document.getElementById('bannerImage');
+      
+      if (!fileInput.files[0]) {
+        await customAlert('❌ Please select a banner image', 'warning');
+        return;
+      }
+
+      // Disable button
+      uploadBtn.disabled = true;
+      uploadBtn.textContent = 'Uploading...';
+
+      try {
+        const formData = new FormData();
+        formData.append('bannerImage', fileInput.files[0]);
+        formData.append('updatedBy', localStorage.getItem('adminUsername') || 'Admin');
+
+        const response = await fetch(`${API_URL}/api/event-details/banner`, {
+          method: 'POST',
+          body: formData
+        });
+
+        const data = await response.json();
+
+        if (response.ok && data.success) {
+          // Show success message
+          messageDiv.style.display = 'block';
+          messageDiv.style.backgroundColor = '#dcfce7';
+          messageDiv.style.color = '#16a34a';
+          messageDiv.style.border = '2px solid #16a34a';
+          messageDiv.textContent = '✅ Banner image uploaded successfully!';
+          
+          // Clear form and preview
+          fileInput.value = '';
+          clearBannerPreview();
+          
+          // Reload current banner
+          loadCurrentBanner();
+          
+          // Hide message after 3 seconds
+          setTimeout(() => {
+            messageDiv.style.display = 'none';
+          }, 3000);
+        } else {
+          throw new Error(data.message || 'Failed to upload banner');
+        }
+      } catch (error) {
+        console.error('Error uploading banner:', error);
+        messageDiv.style.display = 'block';
+        messageDiv.style.backgroundColor = '#fee2e2';
+        messageDiv.style.color = '#dc2626';
+        messageDiv.style.border = '2px solid #dc2626';
+        messageDiv.textContent = '❌ ' + error.message;
+      } finally {
+        uploadBtn.disabled = false;
+        uploadBtn.textContent = 'Upload Banner';
+      }
+    });
+
+    // Delete banner
+    async function deleteBanner() {
+      const confirmed = await customConfirm('⚠️ Are you sure you want to delete the banner image?The ticket form will show a placeholder until you upload a new banner.', 'Confirm Banner Deletion');
+      if (!confirmed) {
+        return;
+      }
+
+      try {
+        const response = await fetch(`${API_URL}/api/event-details/banner`, {
+          method: 'DELETE'
+        });
+
+        const data = await response.json();
+
+        if (response.ok && data.success) {
+          await customAlert('✅ Banner image deleted successfully!', 'success');
+          loadCurrentBanner();
+        } else {
+          throw new Error(data.message || 'Failed to delete banner');
+        }
+      } catch (error) {
+        console.error('Error deleting banner:', error);
+        await customAlert('❌ Failed to delete banner:' + error.message, 'error');
+      }
+    }
+
+    // ==================== END BANNER IMAGE FUNCTIONS ====================
+  </script>
+</body>
+</html>
