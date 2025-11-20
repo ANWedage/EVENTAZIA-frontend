@@ -464,22 +464,29 @@
 
     // Load banner image from backend
     async function loadBannerImage() {
-      const API_URL = window.API_CONFIG?.API_URL || 'http://localhost:3001';
+      const API_URL = window.__API_URL__ || 'http://localhost:3001';
       const bannerImage = document.getElementById('bannerImage');
       const bannerPlaceholder = document.getElementById('bannerPlaceholder');
       
+      console.log('🖼️ Loading banner from:', `${API_URL}/api/event-details/banner`);
+      
       try {
         const response = await fetch(`${API_URL}/api/event-details/banner?t=${Date.now()}`);
+        
+        console.log('Banner response status:', response.status);
+        console.log('Banner content-type:', response.headers.get('Content-Type'));
         
         if (response.ok && response.headers.get('Content-Type')?.startsWith('image/')) {
           const blob = await response.blob();
           const imageUrl = URL.createObjectURL(blob);
           
+          console.log('✅ Banner loaded successfully');
           bannerImage.src = imageUrl;
           bannerImage.style.display = 'block';
           bannerPlaceholder.style.display = 'none';
         } else {
           // No banner found, keep placeholder visible
+          console.log('⚠️ No banner found or invalid response');
           bannerImage.style.display = 'none';
           bannerPlaceholder.style.display = 'block';
           bannerPlaceholder.innerHTML = `
@@ -491,7 +498,7 @@
           `;
         }
       } catch (error) {
-        console.error('Error loading banner:', error);
+        console.error('❌ Error loading banner:', error);
         bannerImage.style.display = 'none';
         bannerPlaceholder.style.display = 'block';
       }
