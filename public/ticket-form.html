@@ -488,7 +488,8 @@
     const fileUploadArea = document.getElementById('fileUploadArea');
     const fileText = document.getElementById('fileText');
     let selectedFile = null;
-    let currentBannerUrl = null; // Track current blob URL for cleanup
+    let currentBannerUrl = null; // Track current blob URL
+    let lastBannerSize = null; // Track banner size to detect changes
 
     // Load banner image from backend
     async function loadBannerImage() {
@@ -502,7 +503,8 @@
           cache: 'no-store',  // Prevent browser caching
           headers: {
             'Cache-Control': 'no-cache, no-store, must-revalidate',
-            'Pragma': 'no-cache'
+            'Pragma': 'no-cache',
+            'Expires': '0'
           }
         });
         
@@ -511,23 +513,33 @@
         
         if (response.ok) {
           const blob = await response.blob();
-          const imageUrl = URL.createObjectURL(blob);
           
-          if (bannerImage && placeholder) {
-            // Clean up old blob URL to prevent memory leak
-            if (currentBannerUrl) {
-              URL.revokeObjectURL(currentBannerUrl);
-            }
+          // Check if banner actually changed by comparing size
+          if (lastBannerSize !== blob.size) {
+            const imageUrl = URL.createObjectURL(blob);
             
-            currentBannerUrl = imageUrl;
-            bannerImage.src = imageUrl;
-            bannerImage.style.display = 'block';
-            placeholder.style.display = 'none';
-            console.log('✅ Banner loaded/updated successfully');
+            if (bannerImage && placeholder) {
+              // Clean up old blob URL to prevent memory leak
+              if (currentBannerUrl) {
+                URL.revokeObjectURL(currentBannerUrl);
+              }
+              
+              currentBannerUrl = imageUrl;
+              lastBannerSize = blob.size;
+              bannerImage.src = imageUrl;
+              bannerImage.style.display = 'block';
+              placeholder.style.display = 'none';
+              console.log('✅ Banner loaded/updated successfully (Size:', (blob.size / 1024).toFixed(2), 'KB)');
+            }
           }
-        } else {
+        } else if (response.status === 404) {
           // No banner uploaded, show placeholder
           if (bannerImage && placeholder) {
+            if (currentBannerUrl) {
+              URL.revokeObjectURL(currentBannerUrl);
+              currentBannerUrl = null;
+            }
+            lastBannerSize = null;
             bannerImage.style.display = 'none';
             placeholder.style.display = 'flex';
             console.log('ℹ️ No banner available - showing placeholder');
@@ -541,11 +553,10 @@
     // Load banner on page load
     loadBannerImage();
 
-    // Auto-refresh banner every 10 seconds to check for updates
+    // Auto-refresh banner every 5 seconds to detect admin updates
     setInterval(() => {
-      console.log('🔄 Checking for banner updates...');
       loadBannerImage();
-    }, 10000); // Refresh every 10 seconds
+    }, 5000);
 
     // Get verified email from URL parameter and prefill
     window.addEventListener('DOMContentLoaded', function() {
