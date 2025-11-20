@@ -72,7 +72,7 @@ const Footer = () => {
         <div className="pt-8 border-t border-gray-700">
           <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
             <p className="text-gray-400 text-sm">
-              © {currentYear} Eventazia. All rights reserved.<br>Developer: Adeepa Neth Wedage</br>
+              © {currentYear} Eventazia. All rights reserved.<br/>Developer: Adeepa Neth Wedage
             </p>
             <div className="flex items-center space-x-6 text-sm">
               <a href="#" className="text-gray-400 hover:text-primary-400 transition-colors">Privacy Policy</a>
