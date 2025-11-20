@@ -192,7 +192,7 @@ const OTPVerification = ({ onVerified, onClose }) => {
       setModal({
         type: 'success',
         title: 'OTP Sent Successfully',
-        message: '✉️ OTP has been sent to your email address.\n\nPlease check your inbox and enter the 4-digit code.',
+        message: '✉️ OTP has been sent to your email address.\n\nPlease check your inbox and enter the 4-digit code.\n\n⚠️ Note: Check your spam/junk folder if you don\'t see the email.',
         onConfirm: () => {
           setModal(null)
           setStep(2)
@@ -270,7 +270,7 @@ const OTPVerification = ({ onVerified, onClose }) => {
       setModal({
         type: 'success',
         title: 'OTP Resent',
-        message: '✉️ A new OTP has been sent to your email address.\n\nPlease check your inbox.',
+        message: '✉️ A new OTP has been sent to your email address.\n\nPlease check your inbox.\n\n⚠️ Note: Check your spam/junk folder if you don\'t see the email.',
         onConfirm: () => setModal(null)
       })
     } catch (err) {
@@ -338,8 +338,11 @@ const OTPVerification = ({ onVerified, onClose }) => {
             <p className="text-gray-600 mb-2">
               Enter the 4-digit OTP sent to
             </p>
-            <p className="font-semibold mb-6" style={{color: '#16a34a'}}>
+            <p className="font-semibold mb-2" style={{color: '#16a34a'}}>
               {email}
+            </p>
+            <p className="text-xs text-gray-500 mb-4" style={{fontStyle: 'italic'}}>
+              💡 Tip: Check your spam folder if you don't see the email
             </p>
             
             <div className="mb-4">

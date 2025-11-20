@@ -493,9 +493,18 @@
     async function loadBannerImage() {
       try {
         const apiUrl = window.__API_URL__ || 'http://localhost:3001';
-        console.log('Loading banner from:', `${apiUrl}/api/event-details/banner`);
+        // Add cache-busting timestamp to force reload on mobile devices
+        const cacheBuster = new Date().getTime();
+        const bannerUrl = `${apiUrl}/api/event-details/banner?t=${cacheBuster}`;
+        console.log('Loading banner from:', bannerUrl);
         
-        const response = await fetch(`${apiUrl}/api/event-details/banner`);
+        const response = await fetch(bannerUrl, {
+          cache: 'no-store',  // Prevent browser caching
+          headers: {
+            'Cache-Control': 'no-cache, no-store, must-revalidate',
+            'Pragma': 'no-cache'
+          }
+        });
         console.log('Banner response status:', response.status);
         
         if (response.ok) {
