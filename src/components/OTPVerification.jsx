@@ -192,7 +192,7 @@ const OTPVerification = ({ onVerified, onClose }) => {
       setModal({
         type: 'success',
         title: 'OTP Sent Successfully',
-        message: '✉️ OTP has been sent to your email address.\n\nPlease check your inbox and enter the 4-digit code.\n\n⚠️ Note: Check your spam/junk folder if you don\'t see the email.',
+        message: '✉️ OTP has been sent to your email address.Please check your inbox and enter the 4-digit code.⚠️ Note: Check your spam/junk folder if you don\'t see the email.',
         onConfirm: () => {
           setModal(null)
           setStep(2)

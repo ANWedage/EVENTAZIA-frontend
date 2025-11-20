@@ -488,6 +488,7 @@
     const fileUploadArea = document.getElementById('fileUploadArea');
     const fileText = document.getElementById('fileText');
     let selectedFile = null;
+    let currentBannerUrl = null; // Track current blob URL for cleanup
 
     // Load banner image from backend
     async function loadBannerImage() {
@@ -496,7 +497,6 @@
         // Add cache-busting timestamp to force reload on mobile devices
         const cacheBuster = new Date().getTime();
         const bannerUrl = `${apiUrl}/api/event-details/banner?t=${cacheBuster}`;
-        console.log('Loading banner from:', bannerUrl);
         
         const response = await fetch(bannerUrl, {
           cache: 'no-store',  // Prevent browser caching
@@ -505,24 +505,33 @@
             'Pragma': 'no-cache'
           }
         });
-        console.log('Banner response status:', response.status);
+        
+        const bannerImage = document.getElementById('bannerImage');
+        const placeholder = document.getElementById('ticketPlaceholder');
         
         if (response.ok) {
           const blob = await response.blob();
           const imageUrl = URL.createObjectURL(blob);
           
-          const bannerImage = document.getElementById('bannerImage');
-          const placeholder = document.getElementById('ticketPlaceholder');
-          
           if (bannerImage && placeholder) {
+            // Clean up old blob URL to prevent memory leak
+            if (currentBannerUrl) {
+              URL.revokeObjectURL(currentBannerUrl);
+            }
+            
+            currentBannerUrl = imageUrl;
             bannerImage.src = imageUrl;
             bannerImage.style.display = 'block';
             placeholder.style.display = 'none';
-            console.log('✅ Banner loaded successfully');
+            console.log('✅ Banner loaded/updated successfully');
           }
         } else {
           // No banner uploaded, show placeholder
-          console.log('No banner image available (status:', response.status, ')');
+          if (bannerImage && placeholder) {
+            bannerImage.style.display = 'none';
+            placeholder.style.display = 'flex';
+            console.log('ℹ️ No banner available - showing placeholder');
+          }
         }
       } catch (error) {
         console.error('❌ Error loading banner image:', error);
@@ -531,6 +540,12 @@
 
     // Load banner on page load
     loadBannerImage();
+
+    // Auto-refresh banner every 10 seconds to check for updates
+    setInterval(() => {
+      console.log('🔄 Checking for banner updates...');
+      loadBannerImage();
+    }, 10000); // Refresh every 10 seconds
 
     // Get verified email from URL parameter and prefill
     window.addEventListener('DOMContentLoaded', function() {
