@@ -493,7 +493,11 @@
     async function loadBannerImage() {
       try {
         const apiUrl = window.__API_URL__ || 'http://localhost:3001';
+        console.log('Loading banner from:', `${apiUrl}/api/event-details/banner`);
+        
         const response = await fetch(`${apiUrl}/api/event-details/banner`);
+        console.log('Banner response status:', response.status);
+        
         if (response.ok) {
           const blob = await response.blob();
           const imageUrl = URL.createObjectURL(blob);
@@ -501,86 +505,131 @@
           const bannerImage = document.getElementById('bannerImage');
           const placeholder = document.getElementById('ticketPlaceholder');
           
-          bannerImage.src = imageUrl;
-          bannerImage.style.display = 'block';
-          placeholder.style.display = 'none';
+          if (bannerImage && placeholder) {
+            bannerImage.src = imageUrl;
+            bannerImage.style.display = 'block';
+            placeholder.style.display = 'none';
+            console.log('✅ Banner loaded successfully');
+          }
         } else {
           // No banner uploaded, show placeholder
-          console.log('No banner image available');
+          console.log('No banner image available (status:', response.status, ')');
         }
       } catch (error) {
-        console.error('Error loading banner image:', error);
+        console.error('❌ Error loading banner image:', error);
       }
     }
 
     // Load banner on page load
     loadBannerImage();
 
-    // Get verified email from URL parameter
-    const urlParams = new URLSearchParams(window.location.search);
-    const verifiedEmail = urlParams.get('email');
-    
-    // Pre-fill and disable email field if verified
-    if (verifiedEmail) {
-      const emailInput = document.getElementById('email');
-      emailInput.value = decodeURIComponent(verifiedEmail);
-      emailInput.readOnly = true;
-      emailInput.style.backgroundColor = '#f3f4f6';
-      emailInput.style.cursor = 'not-allowed';
+    // Get verified email from URL parameter and prefill
+    function prefillVerifiedEmail() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const verifiedEmail = urlParams.get('email');
       
-      // Add verified badge
-      const emailGroup = emailInput.parentElement;
-      const verifiedBadge = document.createElement('div');
-      verifiedBadge.innerHTML = `
-        <div style="display: inline-flex; align-items: center; gap: 6px; margin-top: 4px; color: #16a34a; font-size: 12px; font-weight: 600;">
-          <svg style="width: 16px; height: 16px;" fill="currentColor" viewBox="0 0 20 20">
-            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-          </svg>
-          <span>Email Verified</span>
-        </div>
-      `;
-      emailGroup.appendChild(verifiedBadge);
+      console.log('Verified email from URL:', verifiedEmail);
+      
+      // Pre-fill and disable email field if verified
+      if (verifiedEmail) {
+        const emailInput = document.getElementById('email');
+        if (emailInput) {
+          const decodedEmail = decodeURIComponent(verifiedEmail);
+          emailInput.value = decodedEmail;
+          emailInput.readOnly = true;
+          emailInput.style.backgroundColor = '#f3f4f6';
+          emailInput.style.cursor = 'not-allowed';
+          
+          console.log('✅ Email prefilled:', decodedEmail);
+          
+          // Add verified badge
+          const emailGroup = emailInput.parentElement;
+          const verifiedBadge = document.createElement('div');
+          verifiedBadge.innerHTML = `
+            <div style="display: inline-flex; align-items: center; gap: 6px; margin-top: 4px; color: #16a34a; font-size: 12px; font-weight: 600;">
+              <svg style="width: 16px; height: 16px;" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+              </svg>
+              <span>Email Verified</span>
+            </div>
+          `;
+          emailGroup.appendChild(verifiedBadge);
+        } else {
+          console.error('❌ Email input not found');
+        }
+      }
     }
+    
+    // Call prefill function
+    prefillVerifiedEmail();
 
     // File upload handling
     fileInput.addEventListener('change', function(e) {
+      console.log('File input changed:', e.target.files);
       const file = e.target.files[0];
-      if (file) {
-        // Validate file size
-        if (file.size > 5 * 1024 * 1024) {
-          showError('bankSlip', 'File size must be less than 5MB');
-          fileUploadArea.classList.add('error');
-          return;
-        }
-        
-        // Validate file type
-        const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'application/pdf'];
-        if (!validTypes.includes(file.type)) {
-          showError('bankSlip', 'Only JPG, PNG, or PDF files are allowed');
-          fileUploadArea.classList.add('error');
-          return;
-        }
-        
-        selectedFile = file;
-        fileText.innerHTML = `
-          <div class="file-uploaded">
-            <p class="file-name">${file.name}</p>
-            <button type="button" class="delete-btn" id="deleteFileBtn" title="Delete file">
-              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-              </svg>
-            </button>
-          </div>
-        `;
-        fileUploadArea.classList.remove('error');
-        clearError('bankSlip');
-        
-        // Add delete button event listener
-        document.getElementById('deleteFileBtn').addEventListener('click', function(e) {
+      
+      if (!file) {
+        console.log('No file selected');
+        return;
+      }
+      
+      console.log('File details:', {
+        name: file.name,
+        type: file.type,
+        size: file.size
+      });
+      
+      // Validate file size
+      if (file.size > 5 * 1024 * 1024) {
+        console.error('File too large:', file.size);
+        showError('bankSlip', 'File size must be less than 5MB');
+        fileUploadArea.classList.add('error');
+        fileInput.value = ''; // Clear the input
+        return;
+      }
+      
+      // Validate file type
+      const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'application/pdf'];
+      if (!validTypes.includes(file.type)) {
+        console.error('Invalid file type:', file.type);
+        showError('bankSlip', 'Only JPG, PNG, or PDF files are allowed');
+        fileUploadArea.classList.add('error');
+        fileInput.value = ''; // Clear the input
+        return;
+      }
+      
+      // File is valid, store it
+      selectedFile = file;
+      console.log('✅ File validated and stored:', file.name);
+      
+      fileText.innerHTML = `
+        <div class="file-uploaded">
+          <p class="file-name">${file.name}</p>
+          <button type="button" class="delete-btn" id="deleteFileBtn" title="Delete file">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+            </svg>
+          </button>
+        </div>
+      `;
+      fileUploadArea.classList.remove('error');
+      clearError('bankSlip');
+      
+      // Add delete button event listener
+      const deleteBtn = document.getElementById('deleteFileBtn');
+      if (deleteBtn) {
+        deleteBtn.addEventListener('click', function(e) {
           e.preventDefault();
           e.stopPropagation();
           deleteUploadedFile();
         });
+      }
+    });
+    
+    // Allow click on upload area to trigger file input
+    fileUploadArea.addEventListener('click', function(e) {
+      if (e.target.id !== 'deleteFileBtn' && !e.target.closest('.delete-btn')) {
+        fileInput.click();
       }
     });
 
