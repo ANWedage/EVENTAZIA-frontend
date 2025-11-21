@@ -539,6 +539,15 @@
       console.log('URL:', window.location.href);
       console.log('Email param:', verifiedEmail);
       
+      // PROTECTION: Redirect if no verified email in URL
+      if (!verifiedEmail || verifiedEmail.trim() === '') {
+        console.log('⚠️ No verified email found - redirecting to home page');
+        customAlert('🔒 Access Denied\n\nPlease verify your email first before accessing the ticket registration form.\n\nYou will be redirected to the home page.', 'warning').then(() => {
+          window.location.href = '/';
+        });
+        return;
+      }
+      
       if (verifiedEmail) {
         const emailInput = document.getElementById('email');
         console.log('Email input element:', emailInput);
