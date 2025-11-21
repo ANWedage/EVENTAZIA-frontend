@@ -107,12 +107,14 @@
       transition: border-color 0.3s;
     }
 
-    input:focus {
+    input:focus,
+    textarea:focus {
       outline: none;
       border-color: #16a34a;
     }
 
-    input.error {
+    input.error,
+    textarea.error {
       border-color: #ef4444;
     }
 
@@ -351,6 +353,24 @@
         <input type="file" id="bankSlip" name="bankSlip" accept="image/*,.pdf" style="display: none;">
         <div class="error-message" id="bankSlipError"></div>
         <p class="file-note">⚠️ Please upload a clear and readable bank slip for verification</p>
+      </div>
+
+      <!-- Additional Description Field (Optional) -->
+      <div class="form-group">
+        <label for="additionalDescription">
+          Additional Notes / Special Requests 
+          <span style="color: #6b7280; font-weight: 400; font-size: 12px;">(Optional)</span>
+        </label>
+        <textarea 
+          id="additionalDescription" 
+          name="additionalDescription" 
+          rows="4"
+          placeholder="Any special requests, dietary requirements, accessibility needs, or additional information you'd like us to know..."
+          style="width: 100%; padding: 12px 16px; border: 2px solid #d1d5db; border-radius: 8px; font-size: 16px; font-family: inherit; transition: border-color 0.3s; resize: vertical; min-height: 100px;"
+        ></textarea>
+        <p style="font-size: 12px; color: #6b7280; margin-top: 8px;">
+          📝 This information will be sent to our admin team for review
+        </p>
       </div>
 
       <!-- Submit Button -->
@@ -731,6 +751,13 @@
         formData.append('contactNo', document.getElementById('contactNo').value.trim());
         formData.append('email', document.getElementById('email').value.trim());
         formData.append('bankSlip', selectedFile, selectedFile.name);
+        
+        // Add additional description if provided
+        const additionalDesc = document.getElementById('additionalDescription').value.trim();
+        if (additionalDesc) {
+          formData.append('additionalDescription', additionalDesc);
+          console.log('📝 Additional description included');
+        }
         
         console.log('📤 Form data prepared, sending to server...');
 
